@@ -89,13 +89,13 @@ def to_mob(params):
 async def help(params, channel):
   await channel.send("Help command not implemented yet")
 
-async def na(params):
+async def na(params, channel):
   await generic_super_message(to_mob(params), "NA", na_role)
 
-async def eu(params):
+async def eu(params, channel):
   await generic_super_message(to_mob(params), "EU", eu_role)
 
-async def asia(params):
+async def asia(params, channel):
   await generic_super_message(to_mob(params), "AS", as_role)
 
 async def test(params, channel):
