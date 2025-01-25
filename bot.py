@@ -95,6 +95,10 @@ async def test(params, channel):
   await channel.send(f"Chosen match: {to_mob(params)}")
 
 async def generic_super_message(mob, region, channel, role_id):
+  msg_embed = discord.Embed(title=mob, description=f"A supper {mob} but has spend in {region}", color=0x07a3eb)
+  msg_embed.add_field(name="test", value="test1", inline=False)
+  msg_embed.add_field(name="test2", value="test2", inline=True)
+  await channel.send(embed=msg_embed)
   await channel.send(f"<@&{role_id}> A supper {mob} but has spend in {region}")
   
 cmd_registry = {
