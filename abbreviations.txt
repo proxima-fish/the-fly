@@ -45,7 +45,8 @@ ff firefly
 mff magicfirefly
 cock roach
 r rock
-s shiny
+s shinyladybug
+shiny shinyladybug
 sc scorpion
 sh shell
 sa soldierant
@@ -64,6 +65,7 @@ wfa workerfireant
 fwa workerfireant
 wt workertermite
 wo worm
+fab fireantburrow
 burrow fireantburrow
 mount termitemound
 hole anthole

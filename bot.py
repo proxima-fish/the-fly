@@ -8,13 +8,20 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
-cmdstring = ","
-na_role = "1332261374037856286"
-eu_role = "1332261408552779796"
-as_role = "1332261432573562972"
-
-
 # Initial setup - read config files, etc
+settings = dict()
+with open("settings.txt", "r") as f:
+  lines = f.read().split("\n")
+  for line in lines:
+    linesplit = line.split(" ")
+    settings[linesplit[0]] = linesplit[1]
+
+cmdstring = settings["cmd"]
+na_role = settings["na_role"]
+eu_role = settings["eu_role"]
+as_role = settings["as_role"]
+ping_channel = settings["ping_channel"]
+
 moblist = []
 with open("mob_list.txt", "r") as f:
   moblist = f.read().split("\n")
@@ -82,21 +89,22 @@ def to_mob(params):
 async def help(params, channel):
   await channel.send("Help command not implemented yet")
 
-async def na(params, channel):
-  await generic_super_message(to_mob(params), "NA", channel, na_role)
+async def na(params):
+  await generic_super_message(to_mob(params), "NA", na_role)
 
-async def eu(params, channel):
-  await generic_super_message(to_mob(params), "EU", channel, eu_role)
+async def eu(params):
+  await generic_super_message(to_mob(params), "EU", eu_role)
 
-async def asia(params, channel):
-  await generic_super_message(to_mob(params), "AS", channel, as_role)
+async def asia(params):
+  await generic_super_message(to_mob(params), "AS", as_role)
 
 async def test(params, channel):
   await channel.send(f"Chosen match: {to_mob(params)}")
 
-async def generic_super_message(mob, region, channel, role_id):
+async def generic_super_message(mob, region, role_id):
   msg_embed = discord.Embed(title=mob, description=f"<@&{role_id}> A supper {mob} but has spend in {region}", color=0x07a3eb)
   msg_embed.add_field(name="Lobby", value="Not implemented yet!", inline=False)
+  channel = client.get_channel(int(ping_channel))
   await channel.send(embed=msg_embed)
   await channel.send(f"<@&{role_id}> A supper {mob} but has spend in {region}")
   
