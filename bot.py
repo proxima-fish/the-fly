@@ -98,6 +98,7 @@ async def generic_super_message(mob, region, channel, role_id):
   msg_embed = discord.Embed(title=mob, description=f"<@&{role_id}> A supper {mob} but has spend in {region}", color=0x07a3eb)
   msg_embed.add_field(name="Lobby", value="Not implemented yet!", inline=False)
   await channel.send(embed=msg_embed)
+  await channel.send(f"<@&{role_id}> A supper {mob} but has spend in {region}")
   
 cmd_registry = {
   "n": na,
