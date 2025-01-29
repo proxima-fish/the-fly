@@ -106,7 +106,7 @@ async def generic_super_message(mob, region, role_id):
   msg_embed.add_field(name="Lobby", value="Not implemented yet!", inline=False)
   channel = client.get_channel(int(ping_channel))
   await channel.send(embed=msg_embed)
-  await channel.send(f"<@&{role_id}> A supper {mob} but has spend in {region}")
+  await channel.send(f"A supper {mob} but spend in {region} <@&{role_id}>", tts=True)
   
 cmd_registry = {
   "n": na,
