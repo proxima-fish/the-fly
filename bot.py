@@ -161,6 +161,7 @@ last_query_time = 0
 
 async def lobbies(params, channel):
   global last_query_time
+  global server_ids
   # Update api if it's been more than 5 minutes since the last one
   if time.time() - last_query_time > 300:
     server_ids = m28_api.get_all_server_ids()
