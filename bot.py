@@ -4,6 +4,8 @@ import discord
 import difflib
 import time
 
+import m28_api
+
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -11,7 +13,7 @@ client = discord.Client(intents=intents)
 
 # Initial setup - read config files, etc
 mob_stats = dict()
-with open("stats.txt", "r") as f:
+with open("stats.csv", "r") as f:
   lines = f.read().split("\n")
   for line in lines:
     linesplit = line.split(",")
@@ -38,11 +40,11 @@ with open("mob_list.txt", "r") as f:
   moblist = f.read().split("\n")
 
 abbreviations = dict()
-with open("abbreviations.txt", "r") as f:
+with open("abbreviations.csv", "r") as f:
   lines = f.read().split("\n")
   for line in lines:
     try:
-      line_split = line.split(" ")
+      line_split = line.split(",")
       abbreviations[line_split[0]] = line_split[1]
     except Exception:
       pass
@@ -107,7 +109,7 @@ def to_dhms(elapsed):
   minutes = elapsed // 60
   elapsed -= minutes * 60
   seconds = elapsed
-  return f"{days}d{hours}h{minutes}m{seconds}s"
+  return f"{days}d {hours}h {minutes}m {seconds}s"
 
 async def help(params, channel):
   await channel.send("Help command not implemented yet")
@@ -133,7 +135,7 @@ async def generic_super_message(mob, region, role_id):
   else:
     mob_stats[mob]["count"] += 1
     mob_stats[mob]["time"] = int(time.time())
-  msg_embed = discord.Embed(title=mob, description=f"<@&{role_id}> A supper {mob} but has spend in {region}", color=0x07a3eb)
+  msg_embed = discord.Embed(title=mob, description=f"<@&{role_id}> A supper {mob} but spend in {region}", color=0x07a3eb)
   msg_embed.add_field(name="Lobby", value="Not implemented yet!", inline=False)
   channel = client.get_channel(int(ping_channel))
   await channel.send(embed=msg_embed)
@@ -150,7 +152,34 @@ async def stats(params, channel):
     mob_time = mob_stats[mob]["time"]
   elapsed = int(time.time()) - mob_time
   await channel.send(f"**{mob}**\nNumber of reports: {count}\nTime since last report: {to_dhms(elapsed)}")
-  
+
+
+# M28 api interface.
+# Rate limited to avoid spamming the api
+server_ids = dict()
+last_query_time = 0
+
+async def lobbies(params, channel):
+  # Update api if it's been more than 5 minutes since the last one
+  if time.time() - last_query_time > 300:
+    server_ids = m28_api.get_all_server_ids()
+    last_query_time = time.time()
+  param = params[0]
+  if param in ["vultr-miami", "vultr_frankfurt", "vultr-tokyo"]:
+    ids = server_ids[param]
+    # ids = map of ID to list of server IDs
+    response_str = ""
+    for map_id, server_id_list in ids.items():
+      response_str += f"**{m28_api.map_number_to_name[map_id]}**: {server_id_list}\n"
+    await channel.send(response_str)
+  elif param in m28_api.name_to_map_number:
+    response_str = ""
+    number = m28_api.name_to_map_number[param]
+    for name, data in server_ids.items():
+      response_str += f"**{name}**: {data[number]}\n"
+  else:
+    await channel.send("Unrecognized region or area name")
+
 cmd_registry = {
   "n": na,
   "na": na,
@@ -167,6 +196,8 @@ cmd_registry = {
   "help": help,
   "stats": stats,
   "s": stats,
+  "l": lobbies,
+  "lobbies": lobbies,
 }
 
 @client.event
