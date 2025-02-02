@@ -179,6 +179,7 @@ async def lobbies(params, channel):
     number = m28_api.name_to_map_number[param]
     for name, data in server_ids.items():
       response_str += f"**{name}**: {data[number]}\n"
+    await channel.send(response_str)
   else:
     await channel.send("Unrecognized region or area name")
 
