@@ -17,8 +17,8 @@ with open("stats.txt", "r") as f:
     linesplit = line.split(",")
     name = linesplit[0]
     count = int(linesplit[1])
-    time = int(linesplit[2])
-    mob_stats[name] = {"count": count, "time": time}
+    mob_time = int(linesplit[2])
+    mob_stats[name] = {"count": count, "time": mob_time}
 
 settings = dict()
 with open("settings.txt", "r") as f:
