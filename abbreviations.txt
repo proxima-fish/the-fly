@@ -74,6 +74,7 @@ sf soldierfireant
 sfa soldierfireant
 sh shell
 shiny shinyladybug
+soldfire soldierfireant
 sp sponge
 spid spider
 sq square
