@@ -167,7 +167,7 @@ async def lobbies(params, channel):
     server_ids = m28_api.get_all_server_ids()
     last_query_time = time.time()
   param = params[0]
-  if param in ["vultr-miami", "vultr_frankfurt", "vultr-tokyo"]:
+  if param in ["vultr-miami", "vultr-frankfurt", "vultr-tokyo"]:
     ids = server_ids[param]
     # ids = map of ID to list of server IDs
     response_str = ""
