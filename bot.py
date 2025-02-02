@@ -11,7 +11,7 @@ client = discord.Client(intents=intents)
 
 # Initial setup - read config files, etc
 mob_stats = dict()
-with open("stats.txt", "r") as f:
+with open("stats.csv", "r") as f:
   lines = f.read().split("\n")
   for line in lines:
     linesplit = line.split(",")
@@ -38,11 +38,11 @@ with open("mob_list.txt", "r") as f:
   moblist = f.read().split("\n")
 
 abbreviations = dict()
-with open("abbreviations.txt", "r") as f:
+with open("abbreviations.csv", "r") as f:
   lines = f.read().split("\n")
   for line in lines:
     try:
-      line_split = line.split(" ")
+      line_split = line.split(",")
       abbreviations[line_split[0]] = line_split[1]
     except Exception:
       pass
@@ -107,7 +107,7 @@ def to_dhms(elapsed):
   minutes = elapsed // 60
   elapsed -= minutes * 60
   seconds = elapsed
-  return f"{days}d{hours}h{minutes}m{seconds}s"
+  return f"{days}d {hours}h {minutes}m {seconds}s"
 
 async def help(params, channel):
   await channel.send("Help command not implemented yet")
