@@ -2,6 +2,7 @@
 import discord
 
 import difflib
+import time
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -9,6 +10,16 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 # Initial setup - read config files, etc
+mob_stats = dict()
+with open("stats.txt", "r") as f:
+  lines = f.read().split("\n")
+  for line in lines:
+    linesplit = line.split(",")
+    name = linesplit[0]
+    count = int(linesplit[1])
+    time = int(linesplit[2])
+    mob_stats[name] = {"count": count, "time": time}
+
 settings = dict()
 with open("settings.txt", "r") as f:
   lines = f.read().split("\n")
@@ -59,6 +70,8 @@ def levenshteinDistance(s1, s2):
 
 # Try to fuzzy-string-match a set of words to a name
 def to_mob(params):
+  if len(params) == 0:
+    return ""
   new_params = ""
   for i in params:
     new_params = new_params + i + " "
@@ -86,6 +99,16 @@ def to_mob(params):
   # If nothing is found, return a default
   return min_name
 
+def to_dhms(elapsed):
+  days = elapsed // 86400
+  elapsed -= days * 86400
+  hours = elapsed // 3600
+  elapsed -= hours * 3600
+  minutes = elapsed // 60
+  elapsed -= minutes * 60
+  seconds = elapsed
+  return f"{days}d{hours}h{minutes}m{seconds}s"
+
 async def help(params, channel):
   await channel.send("Help command not implemented yet")
 
@@ -102,11 +125,31 @@ async def test(params, channel):
   await channel.send(f"Chosen match: {to_mob(params)}")
 
 async def generic_super_message(mob, region, role_id):
+  if mob == "":
+    return
+  # Update stats
+  if mob not in mob_stats:
+    mob_stats[mob] = {"count": 1, "time": int(time.time())}
+  else:
+    mob_stats[mob]["count"] += 1
+    mob_stats[mob]["time"] = int(time.time())
   msg_embed = discord.Embed(title=mob, description=f"<@&{role_id}> A supper {mob} but has spend in {region}", color=0x07a3eb)
   msg_embed.add_field(name="Lobby", value="Not implemented yet!", inline=False)
   channel = client.get_channel(int(ping_channel))
   await channel.send(embed=msg_embed)
   await channel.send(f"A supper {mob} but spend in {region} <@&{role_id}>", tts=True)
+
+async def stats(params, channel):
+  mob = to_mob(params)
+  if mob == "":
+    return
+  count = 0
+  mob_time = 0
+  if mob in mob_stats:
+    count = mob_stats[mob]["count"]
+    mob_time = mob_stats[mob]["time"]
+  elapsed = int(time.time()) - mob_time
+  await channel.send(f"**{mob}**\nNumber of reports: {count}\nTime since last report: {to_dhms(elapsed)}")
   
 cmd_registry = {
   "n": na,
@@ -122,28 +165,31 @@ cmd_registry = {
   "test": test,
   "h": help,
   "help": help,
+  "stats": stats,
+  "s": stats,
 }
 
 @client.event
 async def on_ready():
-    print(f'We have logged in as {client.user}')
+  print(f'We have logged in as {client.user}')
 
 @client.event
 async def on_message(message):
-    if message.author == client.user:
+  if message.author == client.user:
+    return
+  if message.content.startswith(cmdstring):
+    content_array = message.content[1:].split(" ")
+    if len(content_array) == 0:
         return
-
-    if message.content.startswith(cmdstring):
-        content_array = message.content[1:].split(" ")
-        if len(content_array) == 0:
-            return
-        cmd = content_array[0]
-        params = content_array[1:]
-        try:
-            await cmd_registry[cmd](params, message.channel)
-        except IndexError as e:
-            await message.channel.send(f"Invalid / unimplemented command {cmd}")
-        except Exception as e:
-            await message.channel.send(f"Error during {cmd} execution")
+    cmd = content_array[0]
+    params = content_array[1:]
+    if cmd in cmd_registry:
+      try:
+        await cmd_registry[cmd](params, message.channel)
+      except Exception as e:
+        await message.channel.send(f"Error during {cmd} execution: {str(e)}")
+    else:
+      # Do nothing
+      pass
 
 client.run(token)
