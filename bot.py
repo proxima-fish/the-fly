@@ -111,22 +111,22 @@ def to_dhms(elapsed):
   seconds = elapsed
   return f"{days}d {hours}h {minutes}m {seconds}s"
 
-async def help(params, channel):
+async def help(params, channel, guild):
   await channel.send("Help command not implemented yet")
 
-async def na(params, channel):
-  await generic_super_message(to_mob(params), "NA", na_role)
+async def na(params, channel, guild):
+  await generic_super_message(to_mob(params), "NA", na_role, guild)
 
-async def eu(params, channel):
-  await generic_super_message(to_mob(params), "EU", eu_role)
+async def eu(params, channel, guild):
+  await generic_super_message(to_mob(params), "EU", eu_role, guild)
 
-async def asia(params, channel):
-  await generic_super_message(to_mob(params), "AS", as_role)
+async def asia(params, channel, guild):
+  await generic_super_message(to_mob(params), "AS", as_role, guild)
 
-async def test(params, channel):
+async def test(params, channel, guild):
   await channel.send(f"Chosen match: {to_mob(params)}")
 
-async def generic_super_message(mob, region, role_id):
+async def generic_super_message(mob, region, role_id, guild):
   if mob == "":
     return
   # Update stats
@@ -135,8 +135,9 @@ async def generic_super_message(mob, region, role_id):
   else:
     mob_stats[mob]["count"] += 1
     mob_stats[mob]["time"] = int(time.time())
-  msg_embed = discord.Embed(title=mob, description=f"<@&{role_id}> A supper {mob} but spend in {region}", color=0x07a3eb)
+  msg_embed = discord.Embed(title=mob, description=f"A supper {mob} but spend in {region}", color=0x07a3eb)
   msg_embed.add_field(name="Lobby", value="Not implemented yet!", inline=False)
+  msg_embed.add_field(name="Guild", value=guild, inline=False)
   channel = client.get_channel(int(ping_channel))
   await channel.send(embed=msg_embed)
   await channel.send(f"A supper {mob} but spend in {region} <@&{role_id}>", tts=True)
@@ -219,7 +220,7 @@ async def on_message(message):
     params = content_array[1:]
     if cmd in cmd_registry:
       try:
-        await cmd_registry[cmd](params, message.channel)
+        await cmd_registry[cmd](params, message.channel, message.guild.name)
       except Exception as e:
         await message.channel.send(f"Error during {cmd} execution: {str(e)}")
     else:
