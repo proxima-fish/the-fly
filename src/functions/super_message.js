@@ -2,16 +2,20 @@ const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags
 const { mobs } = require("../mob_files/mob_list.json");
 const { format_string } = require("../functions/format_string");
 const { ping_channel, na_role, eu_role, as_role, max_fakes } = require("../config.json");
+const { match_mob_name } = require("../functions/match_mob_name");
+
 
 exports.super_message = async (client, message, mob, region) => {
     await message.react("✅");
+
+    mob = match_mob_name(mob);
 
     let file_name = mob.replaceAll(" ", "_");
     let image = `src/assets/mobs/${file_name}.png`;
 
     let channel = await client.channels.fetch(ping_channel);
 
-    let maps = mobs.find(m => m.name === mob).maps;
+    let maps = mobs.find(m => m["name"] === mob).maps;
 
     let embed = new EmbedBuilder()
         .setTitle(`A \`Super ${format_string(mob)}\` has been reported in \`${region.toUpperCase()}\`!`)

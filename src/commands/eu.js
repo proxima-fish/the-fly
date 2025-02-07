@@ -1,5 +1,4 @@
 const { super_message }  = require("../functions/super_message.js");
-const { mobs } = require("../mob_files/mob_list.json");
 
 module.exports = {
     name: "eu",
@@ -9,6 +8,6 @@ module.exports = {
         let mob = args[0];
         if (!mob) return;
 
-        if (mobs.find(m => m.name === mob)) await super_message(client, message, mob, "eu");
+        await super_message(client, message, mob, "eu");
     }
 };
