@@ -5,7 +5,7 @@ module.exports = {
     description: "Report a Super Mob in AS region.",
     aliases: ["a", "asia"],
     async execute(client, message, args) {
-        let mob = args[0];
+        let mob = args.join(" ");
         if (!mob) return;
 
         await super_message(client, message, mob, "as");

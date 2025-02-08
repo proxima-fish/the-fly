@@ -18,7 +18,7 @@ exports.super_message = async (client, message, mob, region) => {
     let maps = mobs.find(m => m["name"] === mob).maps;
 
     let embed = new EmbedBuilder()
-        .setTitle(`A \`Super ${format_string(mob)}\` has been reported in \`${region.toUpperCase()}\`!`)
+        .setTitle(`A \`Supper ${format_string(mob)}\` but spend in \`${region.toUpperCase()}\`!`)
         .setThumbnail(`attachment://${file_name}.png`)
         .setDescription(`> **Raw Message:** \`${message.content}\`\n\n${maps.map(map => `**${format_string(map)}**\n\`\`\`Not implemented yet!\`\`\``).join("\n")}`)
         .setFooter({ text: `Reported from ${message.guild.name}.`, iconURL: message.guild.iconURL() })
