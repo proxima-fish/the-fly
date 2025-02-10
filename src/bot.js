@@ -1,5 +1,6 @@
 const { Client, Collection } = require("discord.js");
 const { token, prefix } = require("./config.json");
+const { start_scrape } = require("./m28_api/m28_api");
 
 const client = new Client({ intents: 3276799 });
 
@@ -37,3 +38,5 @@ process.on("unhandledRejection", async (err) => {
     require("./cmd_handler")(client);
     client.login(token);
 })();
+
+start_scrape();
