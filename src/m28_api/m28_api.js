@@ -7,6 +7,26 @@ let server_list = {};
 
 const server_timeout_time = 3 * 60 * 1000; // 3 minutes as milliseconds
 
+function query_server (server_id) {
+  let url = "https://" + server_id + ".s.m28n.net";
+  https.get(url, (res) => {
+    const { statusCode } = res;
+    if (statusCode !== 200) {
+      console.log("API request failed");
+      res.resume();
+      return;
+    }
+    res.setEncoding('utf8');
+    let response_data = '';
+    res.on('data', (chunk) => { response_data += chunk; });
+    res.on('end', () => {
+      let parsedData = JSON.parse(response_data);
+      let hash = parsedData.webHash;
+      server_list[server_id].hash = hash;
+    });
+  });
+}
+
 function query_single_map (map_id) {
   let url = "https://api.n.m28.io/endpoint/florrio-map-" + map_id + "-green/findEach/";
   https.get(url, (res) => {
@@ -36,6 +56,7 @@ function query_single_map (map_id) {
             "map_id": map_id.toString(),
             "timestamp": Date.now()
           };
+          query_server(value.id);
         }
       }
     });
@@ -112,6 +133,7 @@ exports.get_servers = function (filter) {
 }
 
 exports.start_scrape = function() {
+  scrape();
   setInterval(() => {
     scrape();
   }, 3000);
