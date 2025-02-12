@@ -18,15 +18,16 @@ let lastMob = ``;
 let lastReported = 0;
 let lastRegion = ``;
 exports.super_message = async (client, message, mob, region) => {
+
+    mob = match_mob_name(mob);
+    if (mob.length == 0) return await message.react("❌");
     let ratelimit = 180_000;
     if (ratelimit - ((Date.now() / 1000) - lastReported) > 0 && mob === lastMob && region === lastRegion) return await message.react("❌");
-
-    await message.react("✅");
     lastMob = mob;
     lastReported = Date.now() / 1000;
     lastRegion = region;
 
-    mob = match_mob_name(mob);
+    await message.react("✅");
 
     let file_name = mob.replaceAll(" ", "_");
     let image = `src/assets/mobs/${file_name}.png`;
@@ -34,7 +35,6 @@ exports.super_message = async (client, message, mob, region) => {
     let channel = await client.channels.fetch(ping_channel);
 
     let maps = mobs.find(m => m["name"] === mob).maps;
-    // get_servers(filters)
     let embed = new EmbedBuilder()
         .setTitle(`A \`Supper ${format_string(mob)}\` but spend in \`${region.toUpperCase()}\`!`)
         .setThumbnail(`attachment://${file_name}.png`)
@@ -72,11 +72,11 @@ exports.super_message = async (client, message, mob, region) => {
     let fakeReports = [];
     client.on("interactionCreate", async (interaction) => {
         if (interaction.customId === `fake-${message.id}`) {
-            if (fakeReports.includes(interaction.user.id)) return await interaction.reply({ content: "❌ You have already marked this report as fake!", flags: MessageFlags.Ephemeral });
-            fakeReports.push(interaction.user)
-
+            if (fakeReports.includes(interaction.user)) return await interaction.reply({ content: "❌ You have already marked this report as fake!", flags: MessageFlags.Ephemeral });
+            fakeReports.push(interaction.user);
             if (fakeReports.length === max_fakes) {
-                button.setDisabled(true);
+                fakeButton.setDisabled(true);
+                noteButton.setDisabled(true);
                 content = `❌ **[FAKE]** ~~ A Supper ${format_string(mob)} but spend in ${region.toUpperCase()} | 🚨 <@&${ping_role}>~~`;
             }
 

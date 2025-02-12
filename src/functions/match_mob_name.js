@@ -39,5 +39,6 @@ exports.match_mob_name = function (mob) {
       min_name = test_name;
     }
   }
+  if (min_dist > min_name.length / 2) return "";
   return min_name;
 }
