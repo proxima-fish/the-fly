@@ -1,11 +1,13 @@
 var https = require('https');
-
+const { ping_channel } = require("../config.json");
 
 // List of all servers known to the scraper.
 // Map of server ID to object containing region, map ID, and last timestamp.
 let server_list = {};
 
 const server_timeout_time = 3 * 60 * 1000; // 3 minutes as milliseconds
+
+let last_hash = "";
 
 function query_server (server_id) {
   let url = "https://" + server_id + ".s.m28n.net";
@@ -22,6 +24,12 @@ function query_server (server_id) {
     res.on('end', () => {
       let parsedData = JSON.parse(response_data);
       let hash = parsedData.webHash;
+      if (hash != last_hash) {
+        if (last_hash != "") {        
+           console.log("Likely new build");
+        }
+        last_hash = hash;
+      }
       server_list[server_id].hash = hash;
     });
   });
