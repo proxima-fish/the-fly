@@ -69,11 +69,11 @@ exports.trader_message = async (client, message, region) => {
 
         coords = m;
         msg_url = m.url;
-        location = `src/assets/trader/${m.content}.png`;
+        location = `src/assets/trader/${m.content.toLowerCase()}.png`;
         content = `\`${format_region[region].toUpperCase()}\` Trader at \`${m.content.toUpperCase()}\` | 🚨 <@&${trader_role}>`;
 
         embed.setTitle(`The \`${format_region[region].toUpperCase()}\` Trader has been spotted at \`${m.content.toUpperCase()}\`!`)
-            .setImage(`attachment://${m.content}.png`)
+            .setImage(`attachment://${m.content.toLowerCase()}.png`)
             .setDescription(`> **Raw Message:** \`${message.content}\` | \`${m.content}\`\n> **Message Link:** ${message.url} | ${m.url}\n> **Note:** \`No note has been added.\`\n\n**${format_string("desert")}**\n\`\`\`js\n${strip_server_ids(get_servers([region, "desert"]))}\`\`\``)
             .setFooter({ text: `Reported from ${message.guild.name}.`, iconURL: message.guild.iconURL() })
             .setTimestamp()

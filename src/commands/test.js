@@ -4,7 +4,7 @@ const { prefix } = require("../config.json");
 module.exports = {
     name: "test",
     description: "Tests The Fly's autocorrect / string matching.",
-    aliases: ["t"],
+    aliases: [],
     usage: [`${prefix}test <string>`],
     async execute(client, message, args) {
         let mob = args.join(" ");
