@@ -76,6 +76,7 @@ exports.super_message = async (client, message, mob, region) => {
             fakeReports.push(interaction.user);
             if (fakeReports.length === max_fakes) {
                 fakeButton.setDisabled(true);
+                noteButton.setDisabled(true);
                 content = `❌ **[FAKE]** ~~ A Supper ${format_string(mob)} but spend in ${region.toUpperCase()} | 🚨 <@&${ping_role}>~~`;
             }
 
