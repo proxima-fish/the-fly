@@ -5,7 +5,7 @@ const { ping_channel } = require("../config.json");
 // Map of server ID to object containing region, map ID, and last timestamp.
 let server_list = {};
 
-const server_timeout_time = 3 * 60 * 1000; // 3 minutes as milliseconds
+const server_timeout_time = 5 * 60 * 1000; // 5 minutes as milliseconds
 
 let last_hash = "";
 
@@ -155,7 +155,8 @@ function scrape () {
   // Remove anything that is old (hasn't been served in the past some number of minutes)
   for (var [key, value] of Object.entries(server_list)) {
     time_interval = Date.now() - value.timestamp;
-    if (time_interval > server_timeout_time) {
+    hash = value.hash;
+    if (time_interval > server_timeout_time || hash != last_hash) {
       console.log("Deleted server " + key);
       delete server_list[key];
     }
