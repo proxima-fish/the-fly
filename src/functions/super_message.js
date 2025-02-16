@@ -26,7 +26,7 @@ exports.super_message = async (client, message, mob, region) => {
     lastMob = mob;
     lastReported = Date.now() / 1000;
     lastRegion = region;
-
+    let message_max_fakes = max_fakes;
     await message.react("✅");
 
     let file_name = mob.replaceAll(" ", "_");
@@ -74,15 +74,18 @@ exports.super_message = async (client, message, mob, region) => {
         if (interaction.customId === `fake-${message.id}`) {
             if (fakeReports.includes(interaction.user)) return await interaction.reply({ content: "❌ You have already marked this report as fake!", flags: MessageFlags.Ephemeral });
             fakeReports.push(interaction.user);
-            if (fakeReports.length === max_fakes) {
+            if (interaction.user.id == message.author.id) {
+                message_max_fakes = 1;
+            }
+            if (fakeReports.length === message_max_fakes) {
                 fakeButton.setDisabled(true);
                 noteButton.setDisabled(true);
                 content = `❌ **[FAKE]** ~~ A Supper ${format_string(mob)} but spend in ${region.toUpperCase()} | 🚨 <@&${ping_role}>~~`;
             }
 
-            embed.setFields({ name: `Marked as fake \`${fakeReports.length}/${max_fakes}\``, value: fakeReports.map(user => `> \`${user.username}\` (<@${user.id}>)`).join("\n") });
+            embed.setFields({ name: `Marked as fake \`${fakeReports.length}/${message_max_fakes}\``, value: fakeReports.map(user => `> \`${user.username}\` (<@${user.id}>)`).join("\n") });
 
-            if (fakeReports.length === max_fakes) fakeReports = [];
+            if (fakeReports.length === message_max_fakes) fakeReports = [];
 
             await interaction.update({
                 content: content,
