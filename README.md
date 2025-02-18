@@ -63,7 +63,7 @@ TODO: @vap please fill in
 
 ## Configure the bot
 
-This section will be changed later.
+(Coming soon) Configuration commands through discord
 
 For now, the configuration instructions are as follows:
 
@@ -76,11 +76,87 @@ Go into the fly's src/ directory and create a new `config.json` file. The conten
     "na_role": "1337265848154460191",
     "eu_role": "1337265970577936437",
     "as_role": "1337265996234358834",
+    "trader_role": "1339143893253488722",
     "max_fakes": 3
 }
 ```
 
 `ping_channel` is the ID of the channel where the bot sends pings.
-`na_role`, `eu_role` and `as_role` are the IDs of their respective ping roles. They can be the same if you want to just have one global ping notify role.
+
+`na_role`, `eu_role` and `as_role` are the IDs of their respective ping roles. They can be the same if you want to just have one global ping notify role. `trader_role` is the role to ping for trader notifications.
+
 `token` is your bot's token that you saved earlier. Paste that in place of `YOUR_TOKEN_HERE`. Don't let anyone see it!
+
 `prefix` is the bot's command prefix. You can set it to whatever you want. I like using `,` because it doesn't conflict with other similar bots.
+
+# User Manual
+
+A list of the bot's commands and how to use them.
+
+## Super Reporting
+
+This is the heart of the bot. To report a super mob spawn, type in any channel visible to the bot:
+
+`,[region] [name|abbreviation]` (or whatever prefix has been configured).
+
+The bot listens on all servers that it's joined and sends pings to one channel specified in its config file.
+
+`region` is the region in which the bot spawned (`na, eu, as`). Some shorter abbreviations work too, like `n, e, a`. The bot will try to match the name to the name of an existing mob, or one of the common abbreviations listed in `src/mob_files/abbreviations.json`.
+
+If the input is too far off from any mob name, the bot won't send a message and will react with X to the report. Same if it's a duplicate report, or (coming soon) a likely fake.
+
+If the report is valid, the bot will react with checkmark and ping the appropriate role. The message will also include server join commands, a place for the reporter to add notes (e.g. which map it's in, or where in the map), and an option for other users to mark as fake.
+
+If 3 or more people mark the report as fake (this number is configurable), then the bot will edit the message to make that clear. IF the original reporter marks it as fake, the bot will immediately mark the message as fake without waiting for more people.
+
+## Trader Reporting
+
+To report the trader's location:
+
+`,trader [region]`
+
+where `region` can be one of `na, eu, as`.
+
+The bot will display a grid overlaying a map of Desert. At this point you have 30 seconds to type a coordinate, or cancel the operation by typing `cancel`. For example if the trader is in the sandstorm zone you would say `a1` or `b1`.
+
+The pings are structured very similarly to Super pings, deliberately.
+
+## Testing Autocorrect
+
+To test the bot's string matching for super reports:
+
+`,test [name]`
+
+The bot will return what it thinks is the closest match to the input. If it doesn't give any match that means that the input didn't match any known name or abbreviation.
+
+## Lobby listing
+
+To view a list of all florr servers known to the bot, matching some set of filters:
+
+`,lobbies [filter]`
+
+A filter consists of 0-2 search terms. If there are no filters provided, the bot displays a list of every server.
+
+One type of filtering is by region. You can filter either by shorthand (`na, eu, as` etc) or by server region name (`vultr-miami` etc).
+
+Another type of filtering is by map. You can filter by name (`garden`, `desert`, etc) or by map ID (a number 0 through 6).
+
+You can filter by either of these alone, or both.
+
+The bot will let you know if you specified an invalid filter.
+
+## Ping testing
+
+`,ping`
+
+Displays the bot's one-way and round-trip pings.
+
+## Help
+
+For a list of commands:
+
+`,help`
+
+For more details about a specific command:
+
+`,help [name]`
