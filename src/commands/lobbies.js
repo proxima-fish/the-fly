@@ -60,7 +60,7 @@ module.exports = {
       // Separate servers by map
       let description_string = "";
       for (const map of map_list) {
-        description_string += "\n# " + map.toUpperCase() + "\n";
+        description_string += "\n## " + map.toUpperCase() + "\n";
         for (const [key, value] of Object.entries(servers)) {
           if (formatArgs[value.map_id] == map) {
             description_string += "\`\`\`js\ncp6.forceServerID(\"" + key + "\")\`\`\` ";
@@ -78,7 +78,7 @@ module.exports = {
       // Separate servers by region
       let description_string = "";
       for (const region of region_list) {
-        description_string += "\n# " + region.toUpperCase() + "\n";
+        description_string += "\n## " + region.toUpperCase() + "\n";
         for (const [key, value] of Object.entries(servers)) {
           if (formatArgs[value.region] == region) {
             description_string += "\`\`\`js\ncp6.forceServerID(\"" + key + "\")\`\`\` ";
