@@ -21,7 +21,8 @@ module.exports = {
       "3": 'jungle',
       "4": 'ant hell',
       "5": 'hel',
-      "6": 'sewers'
+      "6": 'sewers',
+      "7": 'factory'
     };
 
     let filters = args;
@@ -32,7 +33,7 @@ module.exports = {
     // Separate into cases based on which filters are used
 
     let region_list = ["na", "as", "eu"];
-    let map_list = ["garden", "desert", "ocean", "jungle", "ant hell", "hel", "sewers"];
+    let map_list = ["garden", "desert", "ocean", "jungle", "ant hell", "hel", "sewers", "factory"];
 
     let region_filter = false;
     let map_filter = false;

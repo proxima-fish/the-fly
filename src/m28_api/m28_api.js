@@ -96,7 +96,8 @@ exports.get_servers = function (filter) {
       "jungle":   '3',
       "ant":      '4',
       "hel":      '5',
-      "sewers":   '6'
+      "sewers":   '6',
+      "factory":  '7'
     }
     let filter_string = filter[i].toLowerCase();
     if (filter_string == "ant hell") {
@@ -149,7 +150,7 @@ exports.start_scrape = function() {
 
 function scrape () {
   // Scrape servers
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 8; i++) {
     query_single_map(i);
   }
   // Remove anything that is old (hasn't been served in the past some number of minutes)
